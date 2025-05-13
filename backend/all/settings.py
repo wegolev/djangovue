@@ -37,9 +37,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 3rd-party apps
+    'rest_framework',
+    'rest_framework_simplejwt',
+    'corsheaders',
+    # Local apps
+    'products',
+    'orders',
+    'users',
+    'delivery',
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # Должен быть в начале
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -47,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
 
 ROOT_URLCONF = 'all.urls'
@@ -121,3 +132,24 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
+
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",  # Vue.js dev server
+    "http://127.0.0.1:8080",  # Альтернативный адрес Vue.js
+]
+
+# Если нужно разрешить все хосты (только для разработки!)
+CORS_ALLOW_CREDENTIALS = True
