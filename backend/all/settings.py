@@ -153,3 +153,9 @@ CORS_ALLOWED_ORIGINS = [
 
 # Если нужно разрешить все хосты (только для разработки!)
 CORS_ALLOW_CREDENTIALS = True
+
+#вы создали кастомную модель пользователя User, унаследованную от AbstractUser, 
+# но Django пытается сохранить обратные связи как для стандартной модели auth.User, 
+# так и для кастомной модели.
+# Нустановить AUTH_USER_MODEL в настройках Django.
+AUTH_USER_MODEL = 'users.User'
