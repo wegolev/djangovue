@@ -1,9 +1,12 @@
 from rest_framework import serializers
 from products.serializers import ProductSerializer
 from .models import Order, OrderItem
+from delivery.serializers import DeliverySerializer
+
 
 class OrderItemSerializer(serializers.ModelSerializer):
     product = ProductSerializer(read_only=True)
+    delivery = DeliverySerializer(read_only=True)  # Доставка будет вложена в заказ
     
     class Meta:
         model = OrderItem
@@ -16,3 +19,4 @@ class OrderSerializer(serializers.ModelSerializer):
         model = Order
         fields = '__all__'
         read_only_fields = ('customer', 'status')
+

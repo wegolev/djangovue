@@ -6,6 +6,9 @@ from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 from products.views import ProductViewSet, CategoryViewSet
 from orders.views import OrderViewSet, OrderItemViewSet
 from users.views import UserViewSet
+from delivery.views import DeliveryViewSet
+
+
 
 router = DefaultRouter()
 router.register(r'products', ProductViewSet, basename='product')
@@ -13,6 +16,7 @@ router.register(r'categories', CategoryViewSet, basename='category')
 router.register(r'orders', OrderViewSet, basename='order')
 router.register(r'order-items', OrderItemViewSet, basename='orderitem')
 router.register(r'users', UserViewSet, basename='user')
+router.register(r'deliveries', DeliveryViewSet, basename='delivery')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
