@@ -1,10 +1,12 @@
 import { createStore } from 'vuex'
+import api from '../api'
 
 export default createStore({
   state: {
     token: localStorage.getItem('token') || null,
     user: null,
-    cartItems: []
+    cartItems: [],
+    categories: []
   },
   mutations: {
     setToken(state, token) {
@@ -14,19 +16,47 @@ export default createStore({
     setUser(state, user) {
       state.user = user
     },
-    addToCart(state, item) {
-      state.cartItems.push(item)
+    setCategories(state, categories) {
+      state.categories = categories
+    },
+    addToCart(state, product) {
+      const existingItem = state.cartItems.find(item => item.product.id === product.id)
+      if (existingItem) {
+        existingItem.quantity++
+      } else {
+        state.cartItems.push({
+          product,
+          quantity: 1,
+          price_at_order: product.price
+        })
+      }
+    },
+    clearCart(state) {
+      state.cartItems = []
     }
   },
   actions: {
+    async fetchCategories({ commit }) {
+      const response = await api.getCategories()
+      commit('setCategories', response.data)
+    },
     async login({ commit }, credentials) {
-      // Реализуем позже
+      try {
+        const response = await api.login(credentials)
+        commit('setToken', response.data.access)
+        commit('setUser', response.data.user)
+        return true
+      } catch (error) {
+        console.error('Login error:', error)
+        return false
+      }
     }
   },
   getters: {
     isAuthenticated: state => !!state.token,
     cartTotal: state => {
-      return state.cartItems.reduce((total, item) => total + item.price, 0)
+      return state.cartItems.reduce((total, item) => 
+        total + (item.price_at_order * item.quantity), 0)
     }
   }
 })

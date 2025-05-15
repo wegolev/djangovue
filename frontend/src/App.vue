@@ -2,8 +2,12 @@
   <header>
     <nav>
       <router-link to="/">Главная</router-link> |
-      <router-link to="/login">Вход</router-link> |
-      <router-link to="/cart">Корзина</router-link>
+      <router-link to="/login" v-if="!isAuthenticated">Вход</router-link>
+      <template v-else>
+        <router-link to="/profile">Профиль</router-link> |
+        <a @click="logout">Выйти</a>
+      </template>
+      | <router-link to="/cart">Корзина ({{ cartItemsCount }})</router-link>
     </nav>
   </header>
   <main>
@@ -11,19 +15,19 @@
   </main>
 </template>
 
-<style>
-#app {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 2rem;
-  font-family: Arial, sans-serif;
+<script>
+import { mapState, mapGetters, mapActions } from 'vuex'
+
+export default {
+  computed: {
+    ...mapState(['cartItems']),
+    ...mapGetters(['isAuthenticated']),
+    cartItemsCount() {
+      return this.cartItems.reduce((count, item) => count + item.quantity, 0)
+    }
+  },
+  methods: {
+    ...mapActions(['logout'])
+  }
 }
-nav {
-  padding: 1rem 0;
-  border-bottom: 1px solid #eee;
-  margin-bottom: 2rem;
-}
-nav a {
-  margin: 0 0.5rem;
-}
-</style>
+</script>
