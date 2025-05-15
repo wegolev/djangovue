@@ -1,75 +1,74 @@
 <template>
-  <div class="auth">
-    <v-container style="max-width: 500px">
-      <v-card>
-        <v-tabs v-model="tab" grow>
-          <v-tab>Вход</v-tab>
-          <v-tab>Регистрация</v-tab>
-        </v-tabs>
+  <div class="cart">
+    <v-container>
+      <h1 class="text-h3 mb-6">Корзина</h1>
 
-        <v-tabs-items v-model="tab">
-          <v-tab-item>
-            <v-card-text>
-              <v-form @submit.prevent="login">
-                <v-text-field
-                  v-model="loginForm.username"
-                  label="Логин"
-                  required
-                />
-                <v-text-field
-                  v-model="loginForm.password"
-                  label="Пароль"
-                  type="password"
-                  required
-                />
-                <v-btn 
-                  type="submit" 
-                  color="primary" 
-                  block
-                >
-                  Войти
-                </v-btn>
-              </v-form>
-            </v-card-text>
-          </v-tab-item>
+      <v-card v-if="cartItems.length > 0">
+        <v-list>
+          <v-list-item
+            v-for="item in cartItems"
+            :key="item.id"
+          >
+            <v-list-item-avatar>
+              <v-img :src="item.image || '/placeholder-product.jpg'" />
+            </v-list-item-avatar>
 
-          <v-tab-item>
-            <v-card-text>
-              <v-form @submit.prevent="register">
-                <v-text-field
-                  v-model="registerForm.username"
-                  label="Логин"
-                  required
-                />
-                <v-text-field
-                  v-model="registerForm.email"
-                  label="Email"
-                  type="email"
-                  required
-                />
-                <v-text-field
-                  v-model="registerForm.password"
-                  label="Пароль"
-                  type="password"
-                  required
-                />
-                <v-text-field
-                  v-model="registerForm.phone"
-                  label="Телефон"
-                  required
-                />
-                <v-btn 
-                  type="submit" 
-                  color="primary" 
-                  block
-                >
-                  Зарегистрироваться
-                </v-btn>
-              </v-form>
-            </v-card-text>
-          </v-tab-item>
-        </v-tabs-items>
+            <v-list-item-content>
+              <v-list-item-title>{{ item.name }}</v-list-item-title>
+              <v-list-item-subtitle>
+                {{ item.price }} ₽ / {{ item.unit }}
+              </v-list-item-subtitle>
+            </v-list-item-content>
+
+            <v-list-item-action>
+              <v-text-field
+                v-model.number="item.quantity"
+                type="number"
+                min="1"
+                style="max-width: 80px"
+                dense
+              />
+            </v-list-item-action>
+
+            <v-list-item-action>
+              <span class="font-weight-bold">
+                {{ (item.price * item.quantity).toFixed(2) }} ₽
+              </span>
+            </v-list-item-action>
+
+            <v-list-item-action>
+              <v-btn icon @click="removeItem(item.id)">
+                <v-icon color="error">mdi-delete</v-icon>
+              </v-btn>
+            </v-list-item-action>
+          </v-list-item>
+        </v-list>
+
+        <v-divider />
+
+        <v-card-actions class="pa-4">
+          <v-spacer />
+          <div class="text-right">
+            <p class="text-h6">Итого: {{ totalPrice }} ₽</p>
+            <v-btn 
+              color="primary" 
+              large 
+              @click="checkout"
+              :loading="isCheckingOut"
+            >
+              Оформить заказ
+            </v-btn>
+          </div>
+        </v-card-actions>
       </v-card>
+
+      <v-alert
+        v-else
+        type="info"
+        class="mt-4"
+      >
+        Ваша корзина пуста
+      </v-alert>
     </v-container>
   </div>
 </template>
@@ -78,36 +77,30 @@
 export default {
   data() {
     return {
-      tab: 0,
-      loginForm: {
-        username: '',
-        password: ''
-      },
-      registerForm: {
-        username: '',
-        email: '',
-        password: '',
-        phone: '',
-        company_name: ''
-      }
+      isCheckingOut: false
+    }
+  },
+  computed: {
+    cartItems() {
+      return this.$store.state.cart
+    },
+    totalPrice() {
+      return this.$store.getters.cartTotal
     }
   },
   methods: {
-    async login() {
-      try {
-        await this.$store.dispatch('login', this.loginForm)
-        this.$router.push('/')
-      } catch (error) {
-        alert('Ошибка авторизации')
-      }
+    removeItem(productId) {
+      this.$store.commit('REMOVE_FROM_CART', productId)
     },
-    async register() {
+    async checkout() {
+      this.isCheckingOut = true
       try {
-        await this.$api.register(this.registerForm)
-        this.tab = 0 // Переключить на вкладку входа
-        alert('Регистрация успешна! Теперь войдите')
+        await this.$store.dispatch('checkout')
+        this.$router.push('/order-success')
       } catch (error) {
-        alert('Ошибка регистрации')
+        console.error('Ошибка оформления заказа:', error)
+      } finally {
+        this.isCheckingOut = false
       }
     }
   }
