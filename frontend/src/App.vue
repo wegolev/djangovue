@@ -31,3 +31,27 @@ export default {
   }
 }
 </script>
+
+<style>
+header {
+  background: #f5f5f5;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+nav {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+nav a {
+  margin: 0 5px;
+  color: #333;
+}
+
+main {
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 0 10px;
+}
+</style>

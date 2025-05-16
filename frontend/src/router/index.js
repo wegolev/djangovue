@@ -1,6 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 
+import ProfileView from '../views/ProfileView.vue' // Добавьте этот импорт
+
+
 const routes = [
   {
     path: '/',
@@ -10,7 +13,19 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: () => import('../views/LoginView.vue')
+    component: () => import('../views/LoginView.vue'),
+    meta: { requiresAuth: false }
+  },
+  {
+    path: '/register',
+    name: 'register',
+    component: () => import('../views/RegisterView.vue'),
+    meta: { requiresAuth: false }
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: ProfileView // Без meta-полей
   },
   {
     path: '/cart',

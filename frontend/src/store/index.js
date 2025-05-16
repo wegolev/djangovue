@@ -4,7 +4,7 @@ import api from '../api'
 export default createStore({
   state: {
     token: localStorage.getItem('token') || null,
-    user: null,
+    user: null, // Должен сохраняться при логине
     cartItems: [],
     categories: []
   },
@@ -35,6 +35,11 @@ export default createStore({
       state.cartItems = []
       state.shippingAddress = ''
       state.orderComments = ''
+    },
+    logout(state) {
+      state.token = null
+      state.user = null
+      localStorage.removeItem('token')
     }
   },
   actions: {
@@ -56,6 +61,9 @@ export default createStore({
     async createOrder({ commit, state }, orderData) {
       const response = await api.post('/orders/', orderData)
       return response.data
+    },
+    logout({ commit }) {
+      commit('logout')
     }
   },
   getters: {

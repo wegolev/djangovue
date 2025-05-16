@@ -39,5 +39,8 @@ export default {
   // Orders
   createOrder(orderData) {
     return apiClient.post('/orders/', orderData)
+  },
+  getOrders() {
+    return apiClient.get('/orders/')
   }
 }
