@@ -33,6 +33,8 @@ export default createStore({
     },
     clearCart(state) {
       state.cartItems = []
+      state.shippingAddress = ''
+      state.orderComments = ''
     }
   },
   actions: {
@@ -50,6 +52,10 @@ export default createStore({
         console.error('Login error:', error)
         return false
       }
+    },
+    async createOrder({ commit, state }, orderData) {
+      const response = await api.post('/orders/', orderData)
+      return response.data
     }
   },
   getters: {

@@ -16,7 +16,12 @@ const routes = [
     path: '/cart',
     name: 'cart',
     component: () => import('../views/CartView.vue')
-  }
+  },
+  {
+    path: '/order-success/:orderId?',
+    name: 'order-success',
+    component: () => import('../views/OrderSuccess.vue')
+  },
 ]
 
 const router = createRouter({
