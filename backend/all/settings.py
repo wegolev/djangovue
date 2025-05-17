@@ -142,14 +142,45 @@ REST_FRAMEWORK = {
 from datetime import timedelta
 
 SIMPLE_JWT = {
+    'AUTH_HEADER_TYPES': ('Bearer',),
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'USER_ID_FIELD': 'id',
+    'USER_ID_CLAIM': 'user_id',
 }
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",  # Vue.js dev server
-    "http://127.0.0.1:8080",  # Альтернативный адрес Vue.js
+    # "http://localhost:8080",  # Vue.js dev server
+    # "http://127.0.0.1:8080",  # Альтернативный адрес Vue.js
+    "http://localhost:5173",
+    "http://127.0.0.1:5173"
 ]
 
 # Если нужно разрешить все хосты (только для разработки!)
 CORS_ALLOW_CREDENTIALS = True
+
+#вы создали кастомную модель пользователя User, унаследованную от AbstractUser, 
+# но Django пытается сохранить обратные связи как для стандартной модели auth.User, 
+# так и для кастомной модели.
+# Нустановить AUTH_USER_MODEL в настройках Django.
+AUTH_USER_MODEL = 'users.User'
+
+
+# LOGGING = {
+#     'version': 1,
+#     'disable_existing_loggers': False,
+#     'handlers': {
+#         'file': {
+#             'level': 'DEBUG',  # Уровень логирования
+#             'class': 'logging.FileHandler',
+#             'filename': 'file.log',  # Путь к файлу логов
+#         },
+#     },
+#     'loggers': {
+#         'django': {
+#             'handlers': ['file'],
+#             'level': 'DEBUG',
+#             'propagate': True,
+#         },
+#     },
+# }
